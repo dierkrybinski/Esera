@@ -3,7 +3,7 @@ class EseraGaszaehler extends IPSModule
 {
     public function Create()
 	{
-        //Never delete this line!
+        //Never delete this line! always
         parent::Create();
         //These lines are parsed on Symcon Startup or Instance creation
         //You cannot use variables here. Just static values.
