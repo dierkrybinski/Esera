@@ -21,6 +21,7 @@ class EseraGaszaehler extends IPSModule
 		
 		$this->RegisterVariableInteger("Counter", "Counter", "", 10);
 		$this->RegisterVariableFloat("Verbrauch", "Verbrauch", "~Gas", 11);
+	    $this->RegisterVariableFloat("Zählerstand", "Zählerstand", "~Gas", 12);
 	    
 	    $this->RegisterVariableFloat("VerbrauchTagEuro", "Verbrauch am Tag in Euro", "~Euro", 12);
 		
