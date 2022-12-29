@@ -3,9 +3,9 @@ class EseraGaszaehler extends IPSModule
 {
     public function Create()
 	{
-        //Never delete this line!
+        //Never delete this line! always 
         parent::Create();
-        //These lines are parsed on Symcon Startup or Instance creation 
+        //These lines are parsed on Symcon Startup or Instance creation
         //You cannot use variables here. Just static values.
         $this->RegisterPropertyInteger("CounterID", 0);
         $this->RegisterPropertyInteger("Impulses", 1000);
@@ -13,20 +13,14 @@ class EseraGaszaehler extends IPSModule
         $this->RegisterPropertyFloat("Brennwert", 11.293);
 		
 		$this->RegisterPropertyFloat("Centkwh", 0.1066);
-	    
-		$this->RegisterVariableInteger("HourResetTime", "Stunden Reset Time", "~UnixTimestamp", 0);
+		
 		$this->RegisterVariableInteger("DailyResetTime", "Tages Reset Time", "~UnixTimestamp", 1);
 	    $this->RegisterVariableInteger("MonthlyResetTime", "Monats Reset Time", "~UnixTimestamp", 2);
 		$this->RegisterVariableInteger("YearlyResetTime", "Jahres Reset Time", "~UnixTimestamp", 3);
 		
 		$this->RegisterVariableInteger("Counter", "Counter", "", 10);
 		$this->RegisterVariableFloat("Verbrauch", "Verbrauch", "~Gas", 11);
-	    
-	    $this->RegisterVariableFloat("VerbrauchTagEuro", "Verbrauch am Tag in Euro", "~Euro", 12);
-		
-		$this->RegisterVariableInteger("StdCounter", "Counter Stunde", "", 15);
-		$this->RegisterVariableFloat("VerbrauchStdm", "Verbrauch in der Stunde in m³", "~Gas", 16);
-		$this->RegisterVariableFloat("VerbrauchStdkwh", "Verbrauch in der Stunde in kwh", "Kirsch.kWh", 17); 
+		$this->RegisterVariableFloat("Zählerstand", "Zählerstand", "~Gas", 12); 
 		
 		$this->RegisterVariableInteger("TagCounter", "Counter Tag", "", 20);
 		$this->RegisterVariableFloat("VerbrauchTagm", "Verbrauch am Tag in m³", "~Gas", 21);
@@ -58,7 +52,6 @@ class EseraGaszaehler extends IPSModule
 		AC_SetLoggingStatus($ArchiveHandlerID[0], $this->GetIDForIdent("VerbrauchVormonatEuro"), true);
 		
 		$this->RegisterTimer("Refresh", 0, 'ESERA_RefreshCounterG($_IPS[\'TARGET\']);');
-		$this->RegisterTimer("HourReset", 0, 'ESERA_ResetPowerMeterHour($_IPS[\'TARGET\']);');
 		$this->RegisterTimer("DailyReset", 0, 'ESERA_ResetPowerMeterDaily($_IPS[\'TARGET\']);');
 		$this->RegisterTimer("MonthlyReset", 0, 'ESERA_ResetPowerMeterMonthly($_IPS[\'TARGET\']);');
         $this->RegisterTimer("YearlyReset", 0, 'ESERA_ResetPowerMeterYearly($_IPS[\'TARGET\']);');
@@ -75,8 +68,7 @@ class EseraGaszaehler extends IPSModule
         //Never delete this line!
         parent::ApplyChanges();
 
-        $this->SetTimerInterval("Refresh", 60 * 1000);
-		$this->SetHourTimerInterval();
+        $this->SetTimerInterval("Refresh", 180 * 1000);
         $this->SetDailyTimerInterval();
         $this->SetMonthlyTimerInterval();
         $this->SetYearlyTimerInterval();    
@@ -87,22 +79,12 @@ class EseraGaszaehler extends IPSModule
         // not implemented   
     }
 	
-		public function ResetPowerMeterHour()
-	{
-		$this->SetHourTimerInterval();
-		$Centkwh = $this->ReadPropertyFloat("Centkwh");
-		SetValue($this->GetIDForIdent("StdCounter"), 0);
-        SetValue($this->GetIDForIdent("VerbrauchStdm"), 0);
-		SetValue($this->GetIDForIdent("VerbrauchStdkwh"), 0);
-	}
-	
 	public function ResetPowerMeterDaily()
 	{
         $this->SetDailyTimerInterval();
 		$this->SetMonthlyTimerInterval();
 		$this->SetYearlyTimerInterval();
-        $Centkwh = $this->ReadPropertyFloat("Centkwh");
-		SetValue($this->GetIDForIdent("TagCounter"), 0);
+        SetValue($this->GetIDForIdent("TagCounter"), 0);
         SetValue($this->GetIDForIdent("VerbrauchVortagm"), GetValue($this->GetIDForIdent("VerbrauchTagm")));
 		SetValue($this->GetIDForIdent("VerbrauchVortagkwh"), GetValue($this->GetIDForIdent("VerbrauchTagkwh")));
 		$ID1 = $this->GetIDForIdent("VerbrauchVortagkwh");
@@ -111,11 +93,7 @@ class EseraGaszaehler extends IPSModule
 		SetValue($this->GetIDForIdent("VerbrauchTagkwh"), 0);
 		$this->DebugMessage("GasZähler_ResetPowerMeterDaily", "Cent je KwH: " . $Centkwh);
     }
-	
-	public function ResetPowerMeterMonthly()
-	{
-		$this->DebugMessage("GasZähler", "ResetPowerMeterMonthly started");
-		$Centkwh = $this->ReadPropertyFloat("Centkwh");
+	public function ResetPowerMeterMonthly(){       
         SetValue($this->GetIDForIdent("MonatCounter"), 0);
         SetValue($this->GetIDForIdent("VerbrauchVormonatm"), GetValue($this->GetIDForIdent("VerbrauchMonatm")));
 		SetValue($this->GetIDForIdent("VerbrauchVormonatkwh"), GetValue($this->GetIDForIdent("VerbrauchMonatkwh")));
@@ -125,9 +103,7 @@ class EseraGaszaehler extends IPSModule
         SetValue($this->GetIDForIdent("VerbrauchMonatm"), 0);
 		SetValue($this->GetIDForIdent("VerbrauchMonatkwh"), 0);
     }
-	
-    public function ResetPowerMeterYearly()
-	{
+    public function ResetPowerMeterYearly(){
         SetValue($this->GetIDForIdent("JahrCounter"), 0);
         SetValue($this->GetIDForIdent("VerbrauchVorjahrm"), GetValue($this->GetIDForIdent("VerbrauchJahrm")));
 		SetValue($this->GetIDForIdent("VerbrauchVorjahrkwh"), GetValue($this->GetIDForIdent("VerbrauchJahrkwh")));
@@ -141,6 +117,7 @@ class EseraGaszaehler extends IPSModule
 	public function RefreshCounterG()
 	{
        $this->calculate();   
+	   $this->DebugMessage("GasZähler", "RefreshCounterG startet" );
     }
 	
 	private function Calculate()
@@ -150,12 +127,12 @@ class EseraGaszaehler extends IPSModule
 		$Brennwert = $this->ReadPropertyFloat("Brennwert");
 		$Centkwh = $this->ReadPropertyFloat("Centkwh");
 		$CounterOld = GetValue($this->GetIDForIdent("Counter"));
-		//if($CounterOld == 0)
-		//{
-		//	SetValue($this->GetIDForIdent("Counter"), $CounterOld);
-		//}
-		//Else
-		//{
+		if($CounterOld == 0)
+		{
+			SetValue($this->GetIDForIdent("Counter"), $CounterOld);
+		}
+		Else
+		{
 			$CounterNew = GetValue($this->ReadPropertyInteger("CounterID"));
 			$delta = $CounterNew - $CounterOld;
 			$Factor = $this->GetFactor($this->ReadPropertyInteger("Impulses"));
@@ -163,22 +140,16 @@ class EseraGaszaehler extends IPSModule
 		
 			SetValue($this->GetIDForIdent("Counter"), $CounterNew);
 			SetValue($this->GetIDForIdent("Verbrauch"), $delta_qm);
-		//}
+		}
 		// Only for debugging
         $this->DebugMessage("GasZähler", "CounterOld: " . $CounterOld);
         $this->DebugMessage("GasZähler", "CounterNew: " . $CounterNew);
         $this->DebugMessage("GasZähler", "Delta: " . $delta);
-		 $this->DebugMessage("GasZähler", "CounterID: " . GetValue($this->ReadPropertyInteger("CounterID")));
         $this->DebugMessage("GasZähler", "Factor: " . $Factor);
         $this->DebugMessage("GasZähler", "Delta kWh: " . $delta_qm);
 		$this->DebugMessage("GasZähler", "Zustandszahl: " . $Zustandszahl);
 		$this->DebugMessage("GasZähler", "Brennwert: " . $Brennwert);
 		
-		//Counter Std
-		$CounterStd = GetValue($this->GetIDForIdent("StdCounter")) + $delta;
-        SetValue($this->GetIDForIdent("StdCounter"), $CounterStd);
-        SetValue($this->GetIDForIdent("VerbrauchStdm"), $CounterStd * $Factor);
-		SetValue($this->GetIDForIdent("VerbrauchStdkwh"), $CounterStd * $Factor * $Zustandszahl * $Brennwert);
 		
 		//Counter Tag
 		$CounterTag = GetValue($this->GetIDForIdent("TagCounter")) + $delta;
@@ -188,15 +159,13 @@ class EseraGaszaehler extends IPSModule
 		//$Brennwert = 11.293;
 		//$FactorKWh = 0.9692*11.293;
 		SetValue($this->GetIDForIdent("VerbrauchTagkwh"), $CounterTag * $Factor * $Zustandszahl * $Brennwert);
-		$ID1 = $this->GetIDForIdent("VerbrauchTagkwh");
-		SetValue($this->GetIDForIdent("VerbrauchTagEuro"), GetValue($ID1) * 0.1066);
 		//echo "Zustandszahl = $AnnualLimit \r\n";
 
 		// Counter Monat  
         $CounterMonat = GetValue($this->GetIDForIdent("MonatCounter")) + $delta;
         SetValue($this->GetIDForIdent("MonatCounter"), $CounterMonat);
         SetValue($this->GetIDForIdent("VerbrauchMonatm"), $CounterMonat * $Factor);
-		SetValue($this->GetIDForIdent("VerbrauchMonatkwh"), $CounterMonat * $Factor * $Zustandszahl * $Brennwert);
+		SetValue($this->GetIDForIdent("VerbrauchMonatkwh"), $CounterTag * $Factor * $Zustandszahl * $Brennwert);
 		
 		// Counter Jahr  
         $CounterJahr = GetValue($this->GetIDForIdent("JahrCounter")) + $delta;
@@ -215,42 +184,26 @@ class EseraGaszaehler extends IPSModule
 	{
         switch ($Impulses){
             case 250:
-              return (0.04);
+              return (0.004);
             break;
               
             case 500:
-              return (0.00);
+              return (0.002);
             break;
               
             case 800:
-              return (0.0125);
+              return (0.00125);
             break;
               
             case 1000:
-              return (0.01);
+              return (0.001);
             break;
               
             case 2000:
-              return (0.005);
+              return (0.0005);
             break;
         }    
     }
-	
-		protected function SetHourTimerInterval()
-	{
-    	$Now = new DateTime(); 
-		$Target = new DateTime(); 
-		//$Target->modify('+1 hour'); 
-		$stunde =  Date('H');
-		$stunde++; 
-		$Target->setTime($stunde,0,1); 
-		$Diff =  $Target->getTimestamp() - $Now->getTimestamp(); 
-		$Tar = $Target->getTimestamp();
-		$Interval = $Diff * 1000;  
-	   	$this->SetTimerInterval("HourReset", $Interval);
-		SetValue($this->GetIDForIdent("HourResetTime"), $Tar);
-		$this->DebugMessage("GasZähler", "Tar: " . $Interval);
-	}
 		
 	protected function SetDailyTimerInterval()
 	{
