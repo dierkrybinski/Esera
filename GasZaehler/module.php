@@ -152,12 +152,12 @@ class EseraGaszaehler extends IPSModule
 		$Brennwert = $this->ReadPropertyFloat("Brennwert");
 		$Centkwh = $this->ReadPropertyFloat("Centkwh");
 		$CounterOld = GetValue($this->GetIDForIdent("Counter"));
-		//if($CounterOld == 0)
-		//{
-		//	SetValue($this->GetIDForIdent("Counter"), $CounterOld);
-		//}
-		//Else
-		//{
+		if($CounterOld == 0)
+		{
+			SetValue($this->GetIDForIdent("Counter"), $CounterOld);
+		}
+		Else
+		{
 			$CounterNew = GetValue($this->ReadPropertyInteger("CounterID"));
 			$delta = $CounterNew - $CounterOld;
 			$Factor = $this->GetFactor($this->ReadPropertyInteger("Impulses"));
