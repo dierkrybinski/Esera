@@ -82,11 +82,7 @@ class EseraGaszaehler extends IPSModule
 		public function ResetPowerMeterHour()
 	{
 		$this->SetHourTimerInterval();
-		$Centkwh = $this->ReadPropertyFloat("Centkwh");
-		$ZaehlerOld = GetValue($this->GetIDForIdent("Zaehlerstand"));
-		$StdM = GetValue($this->GetIDForIdent("VerbrauchStdm"));
-        SetValue($this->GetIDForIdent("Zaehlerstand"), $ZaehlerOld + $StdM);
-	
+		$Centkwh = $this->ReadPropertyFloat("Centkwh");	
 		SetValue($this->GetIDForIdent("StdCounter"), 0);
         SetValue($this->GetIDForIdent("VerbrauchStdm"), 0);
 		SetValue($this->GetIDForIdent("VerbrauchStdkwh"), 0);
@@ -145,6 +141,9 @@ class EseraGaszaehler extends IPSModule
 		
 			SetValue($this->GetIDForIdent("Counter"), $CounterNew);
 			SetValue($this->GetIDForIdent("Verbrauch"), $delta_qm);
+			$ZaehlerOld = GetValue($this->GetIDForIdent("Zaehlerstand"));
+	// $StdM = GetValue($this->GetIDForIdent("VerbrauchStdm"));
+			SetValue($this->GetIDForIdent("Zaehlerstand"), $ZaehlerOld + $delta_qm);
 		}
 	// Only for debugging
     // $this->DebugMessage("GasZähler", "CounterOld: " . $CounterOld);
