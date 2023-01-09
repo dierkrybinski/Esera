@@ -28,36 +28,35 @@ class EseraGaszaehler extends IPSModule
 		$this->RegisterVariableInteger("StdCounter", "Counter Stunde", "", 15);
 		$this->RegisterVariableFloat("VerbrauchStdm", "Verbrauch in der Stunde in m³", "~Gas", 16);
 		$this->RegisterVariableFloat("VerbrauchStdkwh", "Verbrauch in der Stunde in kwh", "Kirsch.kWh", 17); 
-//		$this->RegisterVariableFloat("Zaehlerstand", "Zählerstand", "~Gas", 12); 
-		
+
 		$this->RegisterVariableInteger("TagCounter", "Counter Tag", "", 20);
 		$this->RegisterVariableFloat("VerbrauchTagm", "Verbrauch am Tag in m³", "~Gas", 21);
 		$this->RegisterVariableFloat("VerbrauchTagkwh", "Verbrauch am Tag in kwh", "Kirsch.kWh", 22);
-		$this->RegisterVariableFloat("VerbrauchVortagm", "Verbrauch Vortag in m³", "~Gas", 23);		
-		$this->RegisterVariableFloat("VerbrauchVortagkwh", "Verbrauch Vortag in kWh", "Kirsch.kWh", 24);
-		$this->RegisterVariableFloat("VerbrauchVortagEuro", "Verbrauch Vortag in €", "~Euro", 25);
+	// $this->RegisterVariableFloat("VerbrauchVortagm", "Verbrauch Vortag in m³", "~Gas", 23);		
+	// $this->RegisterVariableFloat("VerbrauchVortagkwh", "Verbrauch Vortag in kWh", "Kirsch.kWh", 24);
+	// $this->RegisterVariableFloat("VerbrauchVortagEuro", "Verbrauch Vortag in €", "~Euro", 25);
 	    
 		$this->RegisterVariableInteger("MonatCounter", "Counter Monat", "", 30);
         $this->RegisterVariableFloat("VerbrauchMonatm", "Verbrauch im Monat in m³", "~Gas", 31);
         $this->RegisterVariableFloat("VerbrauchMonatkwh", "Verbrauch im Monat in kwh", "Kirsch.kWh", 32);
-		$this->RegisterVariableFloat("VerbrauchVormonatm", "Verbrauch Vormonat in m³", "~Gas", 33);		
-		$this->RegisterVariableFloat("VerbrauchVormonatkwh", "Verbrauch Vormonat in kWh", "Kirsch.kWh", 34);
-		$this->RegisterVariableFloat("VerbrauchVormonatEuro", "Verbrauch Vormonat in €", "~Euro", 35);
+	// $this->RegisterVariableFloat("VerbrauchVormonatm", "Verbrauch Vormonat in m³", "~Gas", 33);		
+	// $this->RegisterVariableFloat("VerbrauchVormonatkwh", "Verbrauch Vormonat in kWh", "Kirsch.kWh", 34);
+	// $this->RegisterVariableFloat("VerbrauchVormonatEuro", "Verbrauch Vormonat in €", "~Euro", 35);
 		
 		$this->RegisterVariableInteger("JahrCounter", "Counter Jahr", "", 40);
         $this->RegisterVariableFloat("VerbrauchJahrm", "Verbrauch im Jahr in m³", "~Gas", 41);
         $this->RegisterVariableFloat("VerbrauchJahrkwh", "Verbrauch im Jahr in kwh", "Kirsch.kWh", 42);
-		$this->RegisterVariableFloat("VerbrauchVorjahrm", "Verbrauch Vorjahr in m³", "~Gas", 43);		
-		$this->RegisterVariableFloat("VerbrauchVorjahrkwh", "Verbrauch Vorjahr in kWh", "Kirsch.kWh", 44);
-		$this->RegisterVariableFloat("VerbrauchVorjahrEuro", "Verbrauch Vorjahr in €", "~Euro", 45);
+	//	$this->RegisterVariableFloat("VerbrauchVorjahrm", "Verbrauch Vorjahr in m³", "~Gas", 43);		
+	//	$this->RegisterVariableFloat("VerbrauchVorjahrkwh", "Verbrauch Vorjahr in kWh", "Kirsch.kWh", 44);
+	//	$this->RegisterVariableFloat("VerbrauchVorjahrEuro", "Verbrauch Vorjahr in €", "~Euro", 45);
 
 	    $ArchiveHandlerID = IPS_GetInstanceListByModuleID('{43192F0B-135B-4CE7-A0A7-1475603F3060}');
-	    AC_SetLoggingStatus($ArchiveHandlerID[0], $this->GetIDForIdent("VerbrauchVortagm"), true);
-	    AC_SetLoggingStatus($ArchiveHandlerID[0], $this->GetIDForIdent("VerbrauchVortagkwh"), true);
-		AC_SetLoggingStatus($ArchiveHandlerID[0], $this->GetIDForIdent("VerbrauchVortagEuro"), true);
-	    AC_SetLoggingStatus($ArchiveHandlerID[0], $this->GetIDForIdent("VerbrauchVormonatm"), true);
-	    AC_SetLoggingStatus($ArchiveHandlerID[0], $this->GetIDForIdent("VerbrauchVormonatkwh"), true);
-		AC_SetLoggingStatus($ArchiveHandlerID[0], $this->GetIDForIdent("VerbrauchVormonatEuro"), true);
+	    AC_SetLoggingStatus($ArchiveHandlerID[0], $this->GetIDForIdent("Counter"), true);
+	    AC_SetLoggingStatus($ArchiveHandlerID[0], $this->GetIDForIdent("Verbrauch"), true);
+		AC_SetLoggingStatus($ArchiveHandlerID[0], $this->GetIDForIdent("Zaehlerstand"), true);
+	    AC_SetLoggingStatus($ArchiveHandlerID[0], $this->GetIDForIdent("StdCounter"), true);
+	    AC_SetLoggingStatus($ArchiveHandlerID[0], $this->GetIDForIdent("VerbrauchStdm"), true);
+		AC_SetLoggingStatus($ArchiveHandlerID[0], $this->GetIDForIdent("VerbrauchStdkwh"), true);
 		
 		$this->RegisterTimer("Refresh", 0, 'ESERA_RefreshCounterG($_IPS[\'TARGET\']);');
 		$this->RegisterTimer("HourReset", 0, 'ESERA_ResetPowerMeterHour($_IPS[\'TARGET\']);');
@@ -105,10 +104,10 @@ class EseraGaszaehler extends IPSModule
 		$this->SetYearlyTimerInterval();
         $Centkwh = $this->ReadPropertyFloat("Centkwh");
 		SetValue($this->GetIDForIdent("TagCounter"), 0);
-        SetValue($this->GetIDForIdent("VerbrauchVortagm"), GetValue($this->GetIDForIdent("VerbrauchTagm")));
-		SetValue($this->GetIDForIdent("VerbrauchVortagkwh"), GetValue($this->GetIDForIdent("VerbrauchTagkwh")));
-		$ID1 = $this->GetIDForIdent("VerbrauchVortagkwh");
-		SetValue($this->GetIDForIdent("VerbrauchVortagEuro"), GetValue($ID1) * 0.1066);
+    // SetValue($this->GetIDForIdent("VerbrauchVortagm"), GetValue($this->GetIDForIdent("VerbrauchTagm")));
+	// SetValue($this->GetIDForIdent("VerbrauchVortagkwh"), GetValue($this->GetIDForIdent("VerbrauchTagkwh")));
+	// $ID1 = $this->GetIDForIdent("VerbrauchVortagkwh");
+	// SetValue($this->GetIDForIdent("VerbrauchVortagEuro"), GetValue($ID1) * 0.1066);
         SetValue($this->GetIDForIdent("VerbrauchTagm"), 0);
 		SetValue($this->GetIDForIdent("VerbrauchTagkwh"), 0);
 		$this->DebugMessage("GasZähler_ResetPowerMeterDaily", "Cent je KwH: " . $Centkwh);
@@ -119,11 +118,11 @@ class EseraGaszaehler extends IPSModule
 		$this->DebugMessage("GasZähler", "ResetPowerMeterMonthly started");
 		$Centkwh = $this->ReadPropertyFloat("Centkwh");
         SetValue($this->GetIDForIdent("MonatCounter"), 0);
-        SetValue($this->GetIDForIdent("VerbrauchVormonatm"), GetValue($this->GetIDForIdent("VerbrauchMonatm")));
-		SetValue($this->GetIDForIdent("VerbrauchVormonatkwh"), GetValue($this->GetIDForIdent("VerbrauchMonatkwh")));
-		$ID2 = $this->GetIDForIdent("VerbrauchVormonatkwh");
-		SetValue($this->GetIDForIdent("VerbrauchVormonatEuro"), GetValue($ID2) * 0.1066);
-		//SetValue($this->GetIDForIdent("VerbrauchVormonatEuro"), GetValue($this->GetIDForIdent("VerbrauchVormonatkwh") * 0.1066));
+    // SetValue($this->GetIDForIdent("VerbrauchVormonatm"), GetValue($this->GetIDForIdent("VerbrauchMonatm")));
+	// SetValue($this->GetIDForIdent("VerbrauchVormonatkwh"), GetValue($this->GetIDForIdent("VerbrauchMonatkwh")));
+	// $ID2 = $this->GetIDForIdent("VerbrauchVormonatkwh");
+	// SetValue($this->GetIDForIdent("VerbrauchVormonatEuro"), GetValue($ID2) * 0.1066);
+	// SetValue($this->GetIDForIdent("VerbrauchVormonatEuro"), GetValue($this->GetIDForIdent("VerbrauchVormonatkwh") * 0.1066));
         SetValue($this->GetIDForIdent("VerbrauchMonatm"), 0);
 		SetValue($this->GetIDForIdent("VerbrauchMonatkwh"), 0);
     }
@@ -131,11 +130,11 @@ class EseraGaszaehler extends IPSModule
     public function ResetPowerMeterYearly()
 	{
         SetValue($this->GetIDForIdent("JahrCounter"), 0);
-        SetValue($this->GetIDForIdent("VerbrauchVorjahrm"), GetValue($this->GetIDForIdent("VerbrauchJahrm")));
-		SetValue($this->GetIDForIdent("VerbrauchVorjahrkwh"), GetValue($this->GetIDForIdent("VerbrauchJahrkwh")));
-		$ID3 = $this->GetIDForIdent("VerbrauchVorjahrkwh");
-		SetValue($this->GetIDForIdent("VerbrauchVorjahrEuro"), GetValue($ID3) * 0.1066);
-		//SetValue($this->GetIDForIdent("VerbrauchVorjahrEuro"), GetValue($this->GetIDForIdent("VerbrauchVorjahrkwh") * 0.1066));
+    // SetValue($this->GetIDForIdent("VerbrauchVorjahrm"), GetValue($this->GetIDForIdent("VerbrauchJahrm")));
+	// SetValue($this->GetIDForIdent("VerbrauchVorjahrkwh"), GetValue($this->GetIDForIdent("VerbrauchJahrkwh")));
+	// $ID3 = $this->GetIDForIdent("VerbrauchVorjahrkwh");
+	// SetValue($this->GetIDForIdent("VerbrauchVorjahrEuro"), GetValue($ID3) * 0.1066);
+	// SetValue($this->GetIDForIdent("VerbrauchVorjahrEuro"), GetValue($this->GetIDForIdent("VerbrauchVorjahrkwh") * 0.1066));
         SetValue($this->GetIDForIdent("VerbrauchJahrm"), 0);
 		SetValue($this->GetIDForIdent("VerbrauchJahrkwh"), 0);
     }
