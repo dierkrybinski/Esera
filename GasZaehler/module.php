@@ -92,6 +92,10 @@ class EseraGaszaehler extends IPSModule
 	{
 		$this->SetHourTimerInterval();
 		$Centkwh = $this->ReadPropertyFloat("Centkwh");
+		$ZaehlerOld = GetValue($this->GetIDForIdent("Zaehlerstand"));
+		$StdM = GetValue($this->GetIDForIdent("VerbrauchStdm"));
+        SetValue($this->GetIDForIdent("Zaehlerstand"), $ZaehlerOld * $StdM);
+	
 		SetValue($this->GetIDForIdent("StdCounter"), 0);
         SetValue($this->GetIDForIdent("VerbrauchStdm"), 0);
 		SetValue($this->GetIDForIdent("VerbrauchStdkwh"), 0);
