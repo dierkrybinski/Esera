@@ -126,20 +126,22 @@ class EseraGaszaehler extends IPSModule
 		global $delta;
 		global $factor;
 		global $delta_qm;
+		global $CounterNew;
 		// Jahresgrenzwert
         $Zustandszahl = $this->ReadPropertyFloat("Zustandszahl");
 		$Brennwert = $this->ReadPropertyFloat("Brennwert");
 		$Centkwh = $this->ReadPropertyFloat("Centkwh");
 		$CounterOld = GetValue($this->GetIDForIdent("Counter"));
+		$CounterNew = GetValue($this->ReadPropertyInteger("CounterID"));
 
 		if($CounterOld == 0)
 		{
-			SetValue($this->GetIDForIdent("Counter"), $CounterOld);
+			SetValue($this->GetIDForIdent("Counter"), $CounterNew);
 		}
 		Else
 		{
 
-			$CounterNew = GetValue($this->ReadPropertyInteger("CounterID"));
+			
 			$delta = $CounterNew - $CounterOld;
 			$Factor = $this->GetFactor($this->ReadPropertyInteger("Impulses"));
 			$delta_qm = ($delta * $Factor) * 20;
