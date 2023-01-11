@@ -149,8 +149,8 @@ class EseraGaszaehler extends IPSModule
 			//SetValue($this->GetIDForIdent("Verbrauch"), $delta_qm);
 			$ZaehlerOld = GetValue($this->GetIDForIdent("Zaehlerstand"));
 			SetValue($this->GetIDForIdent("Zaehlerstand"), $ZaehlerOld + $delta_qm);
-			$Zaehlerstand = GetValue($this->GetIDForIdent("Zaehlerstand");
-			$Zaehlerstandold = GetValue($this->GetIDForIdent("Zaehlerstandalt");
+			$Zaehlerstand = GetValue($this->GetIDForIdent("Zaehlerstand"));
+			$Zaehlerstandold = GetValue($this->GetIDForIdent("Zaehlerstandalt"));
 			if ($Zaehlerstandold > 0 )
 			{
 				SetValue($this->GetIDForIdent("Verbrauch"), $Zaehlerstand - $Zaehlerstandold);
