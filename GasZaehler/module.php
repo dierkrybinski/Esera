@@ -20,10 +20,9 @@ class EseraGaszaehler extends IPSModule
 		$this->RegisterVariableInteger("YearlyResetTime", "Jahres Reset Time", "~UnixTimestamp", 3);
 		
 		$this->RegisterVariableInteger("Counter", "Counter", "", 10);
-		$this->RegisterVariableFloat("Verbrauch", "Verbrauch", "~Gas", 11);
-	    $this->RegisterVariableFloat("Zaehlerstand", "Zaehlerstand", "~Gas", 12);
-	    
-	    $this->RegisterVariableFloat("VerbrauchTagEuro", "Verbrauch am Tag in Euro", "~Euro", 13);
+	    $this->RegisterVariableFloat("Zaehlerstand", "Zaehlerstand", "~Gas", 11);
+	    $this->RegisterVariableFloat("Zaehlerstandalt", "Zaehlerstand alt", "~Gas", 12
+		$this->RegisterVariableFloat("Verbrauch", "Verbrauch", "~Gas", 13);	    
 		
 		$this->RegisterVariableInteger("StdCounter", "Counter Stunde", "", 15);
 		$this->RegisterVariableFloat("VerbrauchStdm", "Verbrauch in der Stunde in m³", "~Gas", 16);
@@ -32,6 +31,8 @@ class EseraGaszaehler extends IPSModule
 		$this->RegisterVariableInteger("TagCounter", "Counter Tag", "", 20);
 		$this->RegisterVariableFloat("VerbrauchTagm", "Verbrauch am Tag in m³", "~Gas", 21);
 		$this->RegisterVariableFloat("VerbrauchTagkwh", "Verbrauch am Tag in kwh", "Kirsch.kWh", 22);
+	    $this->RegisterVariableFloat("VerbrauchTagEuro", "Verbrauch am Tag in Euro", "~Euro", 23);
+
 	    
 		$this->RegisterVariableInteger("MonatCounter", "Counter Monat", "", 30);
         $this->RegisterVariableFloat("VerbrauchMonatm", "Verbrauch im Monat in m³", "~Gas", 31);
@@ -145,9 +146,15 @@ class EseraGaszaehler extends IPSModule
 			$delta_qm = ($delta * $Factor);
 	
 			SetValue($this->GetIDForIdent("Counter"), $CounterNew);
-			SetValue($this->GetIDForIdent("Verbrauch"), $delta_qm);
+			//SetValue($this->GetIDForIdent("Verbrauch"), $delta_qm);
 			$ZaehlerOld = GetValue($this->GetIDForIdent("Zaehlerstand"));
 			SetValue($this->GetIDForIdent("Zaehlerstand"), $ZaehlerOld + $delta_qm);
+			$Zaehlerstan = GetValue($this->GetIDForIdent("Zaehlerstand"):
+			$Zaehlerstandold = GetValue($this->GetIDForIdent("Zaehlerstandalt"):
+			if ($Zaehlerstandold > 0 )
+			{
+				SetValue($this->GetIDForIdent("Verbrauch"), $Zaehlerstand - $Zaehlerstandold);
+			}
 		}
 		
 		//Counter Std
