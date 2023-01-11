@@ -97,12 +97,10 @@ class EseraGaszaehler extends IPSModule
 		SetValue($this->GetIDForIdent("TagCounter"), 0);
         SetValue($this->GetIDForIdent("VerbrauchTagm"), 0);
 		SetValue($this->GetIDForIdent("VerbrauchTagkwh"), 0);
-	//	$this->DebugMessage("GasZähler_ResetPowerMeterDaily", "Cent je KwH: " . $Centkwh);
     }
 	
 	public function ResetPowerMeterMonthly()
 	{
-	//	$this->DebugMessage("GasZähler", "ResetPowerMeterMonthly started");
 		$Centkwh = $this->ReadPropertyFloat("Centkwh");
         SetValue($this->GetIDForIdent("MonatCounter"), 0);
         SetValue($this->GetIDForIdent("VerbrauchMonatm"), 0);
@@ -144,23 +142,13 @@ class EseraGaszaehler extends IPSModule
 			
 			$delta = $CounterNew - $CounterOld;
 			$Factor = $this->GetFactor($this->ReadPropertyInteger("Impulses"));
-			$delta_qm = ($delta * $Factor) * 20;
+			$delta_qm = ($delta * $Factor);
 	
 			SetValue($this->GetIDForIdent("Counter"), $CounterNew);
 			SetValue($this->GetIDForIdent("Verbrauch"), $delta_qm);
 			$ZaehlerOld = GetValue($this->GetIDForIdent("Zaehlerstand"));
-	// $StdM = GetValue($this->GetIDForIdent("VerbrauchStdm"));
 			SetValue($this->GetIDForIdent("Zaehlerstand"), $ZaehlerOld + $delta_qm);
 		}
-	// Only for debugging
-    // $this->DebugMessage("GasZähler", "CounterOld: " . $CounterOld);
-    // $this->DebugMessage("GasZähler", "CounterNew: " . $CounterNew);
-    // $this->DebugMessage("GasZähler", "Delta: " . $delta);
-	// $this->DebugMessage("GasZähler", "CounterID: " . GetValue($this->ReadPropertyInteger("CounterID")));
-    // $this->DebugMessage("GasZähler", "Factor: " . $Factor);
-    // $this->DebugMessage("GasZähler", "Delta kWh: " . $delta_qm);
-	// $this->DebugMessage("GasZähler", "Zustandszahl: " . $Zustandszahl);
-	// $this->DebugMessage("GasZähler", "Brennwert: " . $Brennwert);
 		
 		//Counter Std
 		$CounterStd = GetValue($this->GetIDForIdent("StdCounter")) + $delta;
@@ -237,7 +225,6 @@ class EseraGaszaehler extends IPSModule
 		$Interval = $Diff * 1000;  
 	   	$this->SetTimerInterval("HourReset", $Interval);
 		SetValue($this->GetIDForIdent("HourResetTime"), $Tar);
-	// $this->DebugMessage("GasZähler", "Tar: " . $Interval);
 	}
 		
 	protected function SetDailyTimerInterval()
